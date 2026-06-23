@@ -1,7 +1,8 @@
 import { ImageResponse } from "next/og";
 import { siteConfig } from "@/data/site";
 
-export const runtime = "edge";
+// Runs on the Node.js runtime (the default). next/og works here without the
+// edge sandbox's "code generation from strings disallowed" restriction.
 export const alt = `${siteConfig.name} — ${siteConfig.tagline}`;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";

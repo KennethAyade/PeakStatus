@@ -19,7 +19,7 @@ export const siteConfig = {
   // Public-facing one-liner used in metadata and the hero supporting copy.
   description:
     "Peak Status is a Cebu-based creative and digital growth studio helping local businesses build stronger brands, better content, and smarter digital systems.",
-  tagline: "Helping Local Brands Reach Their Peak",
+  tagline: "Your Brand, at Its Peak",
   location: "Cebu, Philippines",
   // TODO: Replace with the official domain once registered.
   url: "https://peakstatus.ph",
@@ -57,8 +57,8 @@ export const navLinks: NavLink[] = [
 
 export const hero = {
   eyebrow: "Cebu-based creative & digital growth studio",
-  headlineLead: "Helping Local Brands",
-  headlineHighlight: "Reach Their Peak",
+  headlineLead: "Your Brand, at Its",
+  headlineHighlight: "Peak",
   subtext:
     "Peak Status is a Cebu-based creative and digital growth studio helping local businesses build stronger brands, better content, and smarter digital systems.",
   primaryCta: { label: "Work With Us", href: "#contact" },
@@ -305,7 +305,8 @@ export type TeamMember = {
   role: string;
   description: string;
   skills: string[];
-  portfolio?: string;
+  /** Public profile/portfolio links (e.g. personal site, Behance). */
+  links?: { label: string; href: string }[];
   status: "available" | "coming-soon";
 };
 
@@ -324,7 +325,9 @@ export const team: TeamMember[] = [
       "Systems Integration",
       "Business Process Automation",
     ],
-    portfolio: "https://kenneth-ayade-portfolio.vercel.app/",
+    links: [
+      { label: "Portfolio", href: "https://kenneth-ayade-portfolio.vercel.app/" },
+    ],
     status: "available",
   },
   {
@@ -348,14 +351,31 @@ export const team: TeamMember[] = [
     // TODO: Add Brian's portfolio link once available.
     status: "available",
   },
-  // Placeholder members — do NOT invent names, roles, or details.
   {
-    name: "Team Profile Coming Soon",
-    role: "Role to be added",
-    description: "Portfolio details pending.",
-    skills: [],
-    status: "coming-soon",
+    // Verified from his portfolio + Behance: "John Cadungog — Software
+    // Engineer & UI/UX Designer" / "Graphics Designer | Software Developer".
+    name: "John Cadungog",
+    role: "Software Engineer & UI/UX Designer",
+    description:
+      "John bridges engineering and design — building backend systems and React-based frontends while also producing branding, UI/UX, and visual design that ties a brand together.",
+    skills: [
+      "Java",
+      "Spring Boot",
+      "REST APIs",
+      "React",
+      "SQL",
+      "UI/UX Design",
+      "Figma",
+      "Branding",
+      "Visual Design",
+    ],
+    links: [
+      { label: "Portfolio", href: "https://johncadungog.github.io/Portfolio/#home" },
+      { label: "Behance", href: "https://www.behance.net/johncadungog1" },
+    ],
+    status: "available",
   },
+  // Placeholder members — do NOT invent names, roles, or details.
   {
     name: "Team Profile Coming Soon",
     role: "Role to be added",

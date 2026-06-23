@@ -94,16 +94,21 @@ function MemberCard({ member }: { member: TeamMember }) {
         </ul>
       )}
 
-      {member.portfolio && (
-        <a
-          href={member.portfolio}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-6 inline-flex w-fit items-center gap-1.5 text-sm font-medium text-foreground transition-opacity hover:opacity-70"
-        >
-          View portfolio
-          <span aria-hidden>↗</span>
-        </a>
+      {member.links && member.links.length > 0 && (
+        <div className="mt-auto flex flex-wrap gap-x-5 gap-y-2 pt-6">
+          {member.links.map((link) => (
+            <a
+              key={link.href}
+              href={link.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex w-fit items-center gap-1.5 text-sm font-medium text-foreground transition-opacity hover:opacity-70"
+            >
+              {link.label}
+              <span aria-hidden>↗</span>
+            </a>
+          ))}
+        </div>
       )}
     </article>
   );

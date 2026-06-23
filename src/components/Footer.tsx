@@ -18,7 +18,10 @@ export default function Footer() {
               height={32}
               className="h-6 w-auto"
             />
-            <p className="mt-4 text-sm leading-relaxed text-muted">
+            <p className="text-chrome mt-4 font-display text-base font-semibold tracking-tight">
+              {siteConfig.tagline}
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-muted">
               {siteConfig.description}
             </p>
             <p className="mt-4 text-xs uppercase tracking-[0.18em] text-muted/70">
