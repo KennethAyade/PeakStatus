@@ -16,7 +16,6 @@ import { contact, siteConfig } from "@/data/site";
  *   - A Next.js Route Handler (src/app/api/contact/route.ts) + email service
  *     such as Resend, Nodemailer, or Postmark.
  *   - A hosted form provider such as Formspree, Web3Forms, or Basin.
- * Also confirm siteConfig.email is the real, monitored inbox.
  */
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
@@ -60,19 +59,23 @@ export default function Contact() {
             >
               Email Us
             </a>
+          </div>
+
+          {/* Direct contact details */}
+          <div className="mt-6 flex flex-col gap-2 text-sm">
             <a
               href={`mailto:${siteConfig.email}`}
-              className="text-sm text-muted transition-colors hover:text-foreground"
+              className="w-fit text-muted transition-colors hover:text-foreground"
             >
               {siteConfig.email}
             </a>
+            <a
+              href={`tel:${siteConfig.phoneHref}`}
+              className="w-fit text-muted transition-colors hover:text-foreground"
+            >
+              {siteConfig.phone}
+            </a>
           </div>
-
-          {/* Placeholder note — visible reminder that the inbox is not final. */}
-          <p className="mt-4 text-xs text-muted/60">
-            Placeholder email address — to be replaced with the official Peak
-            Status inbox.
-          </p>
         </Reveal>
 
         {/* Right: form UI (mailto-based, no backend yet) */}

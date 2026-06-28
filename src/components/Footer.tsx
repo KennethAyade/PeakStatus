@@ -56,6 +56,12 @@ export default function Footer() {
             >
               {siteConfig.email}
             </a>
+            <a
+              href={`tel:${siteConfig.phoneHref}`}
+              className="text-sm text-muted transition-colors hover:text-foreground"
+            >
+              {siteConfig.phone}
+            </a>
             {activeSocials.length > 0 && (
               <div className="mt-2 flex gap-4">
                 {activeSocials.map((s) => (

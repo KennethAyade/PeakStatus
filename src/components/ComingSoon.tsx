@@ -69,6 +69,14 @@ export default function ComingSoon() {
             {siteConfig.email}
           </a>
         </div>
+        <p className="mt-4 text-sm text-muted">
+          <a
+            href={`tel:${siteConfig.phoneHref}`}
+            className="transition-colors hover:text-foreground"
+          >
+            {siteConfig.phone}
+          </a>
+        </p>
 
         {/* Footer line */}
         <p className="mt-12 text-xs uppercase tracking-[0.2em] text-muted/70">
