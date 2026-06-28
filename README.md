@@ -55,6 +55,25 @@ Useful flags / fields:
 - `siteConfig.socials` — add real URLs to reveal social links in the footer.
 - `team[]` — three entries are placeholders (`status: "coming-soon"`).
 
+## Coming Soon / maintenance mode
+
+A single toggle controls a "Coming Soon" gate for the **deployed** site only:
+
+- File: `src/config/site-mode.ts` → `MAINTENANCE_MODE`
+- `false` (default) → full site is live everywhere.
+- `true` → the deployed URL (e.g. `https://peak-status.vercel.app`) shows only
+  the Coming Soon page. **Localhost always shows the full site**, so you can keep
+  working while the public URL is gated.
+
+How it works: `src/middleware.ts` rewrites all requests to `/coming-soon` when
+the toggle is on and the request host is not local. Detection is host-based
+(not `NODE_ENV`), so `npm run start` locally still shows the full site.
+
+To gate the live URL: set `MAINTENANCE_MODE = true`, commit, and deploy.
+To launch: set it back to `false`, commit, and deploy.
+
+Preview the Coming Soon page locally any time: `http://localhost:3000/coming-soon`.
+
 ## What still needs to be finalized before launch
 
 See the handoff notes provided with this build. In short:
