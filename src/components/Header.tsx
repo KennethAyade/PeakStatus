@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 import { navLinks, hero } from "@/data/site";
 
@@ -36,8 +37,8 @@ export default function Header() {
         className="mx-auto flex h-16 max-w-6xl items-center justify-between px-5 sm:h-20 sm:px-8"
       >
         {/* Logo */}
-        <a
-          href="#home"
+        <Link
+          href="/#home"
           onClick={() => setOpen(false)}
           className="flex items-center"
           aria-label="Peak Status — home"
@@ -50,10 +51,10 @@ export default function Header() {
             priority
             className="h-5 w-auto sm:h-6"
           />
-        </a>
+        </Link>
 
         {/* Desktop nav */}
-        <ul className="hidden items-center gap-8 md:flex">
+        <ul className="hidden items-center gap-7 lg:flex">
           {navLinks.map((link) => (
             <li key={link.href}>
               <a
@@ -69,7 +70,7 @@ export default function Header() {
         {/* Desktop CTA */}
         <a
           href={hero.primaryCta.href}
-          className="hidden rounded-full bg-white px-5 py-2.5 text-sm font-medium text-ink transition-transform hover:scale-[1.03] active:scale-95 md:inline-flex"
+          className="hidden rounded-full bg-white px-5 py-2.5 text-sm font-medium text-ink transition-transform hover:scale-[1.03] active:scale-95 lg:inline-flex"
         >
           {hero.primaryCta.label}
         </a>
@@ -81,7 +82,7 @@ export default function Header() {
           aria-expanded={open}
           aria-controls="mobile-menu"
           onClick={() => setOpen((v) => !v)}
-          className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5 md:hidden"
+          className="relative z-50 flex h-10 w-10 flex-col items-center justify-center gap-1.5 lg:hidden"
         >
           <span
             className={`h-px w-6 bg-foreground transition-transform duration-300 ${
@@ -104,7 +105,7 @@ export default function Header() {
       {/* Mobile menu */}
       <div
         id="mobile-menu"
-        className={`md:hidden ${open ? "block" : "hidden"} border-t border-white/10 bg-ink/95 backdrop-blur-md`}
+        className={`lg:hidden ${open ? "block" : "hidden"} border-t border-white/10 bg-ink/95 backdrop-blur-md`}
       >
         <ul className="mx-auto flex max-w-6xl flex-col px-5 py-4">
           {navLinks.map((link) => (

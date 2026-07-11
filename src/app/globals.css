@@ -104,21 +104,28 @@
 /* -------------------------------------------------------------------------- */
 .reveal {
   opacity: 0;
-  transform: translateY(18px);
+  /* Larger lift + a subtle scale-settle and soft focus-in make the entrance
+     read as lively while still playing only once (see Reveal.tsx). */
+  transform: translateY(26px) scale(0.985);
+  filter: blur(4px);
   transition:
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
-  will-change: opacity, transform;
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  will-change: opacity, transform, filter;
 }
 
 .reveal[data-visible="true"] {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
+  filter: none;
 }
 
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1;
     transform: none;
+    filter: none;
+    transition: none;
   }
 }

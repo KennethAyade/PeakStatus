@@ -31,7 +31,11 @@ export function middleware(request: NextRequest) {
   }
 
   const { pathname } = request.nextUrl;
-  if (ALLOWLIST.has(pathname) || pathname.startsWith("/brand/")) {
+  if (
+    ALLOWLIST.has(pathname) ||
+    pathname.startsWith("/brand/") ||
+    pathname.startsWith("/work/")
+  ) {
     return NextResponse.next();
   }
 

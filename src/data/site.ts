@@ -43,14 +43,18 @@ export const siteConfig = {
 
 export type NavLink = { label: string; href: string };
 
+// Hrefs are root-relative (e.g. "/#about") so the same nav works from any page,
+// including the standalone /gallery route. On the homepage these still resolve
+// to smooth in-page anchor scrolls.
 export const navLinks: NavLink[] = [
-  { label: "Home", href: "#home" },
-  { label: "About", href: "#about" },
-  { label: "Services", href: "#services" },
-  { label: "Work", href: "#work" },
-  { label: "Team", href: "#team" },
-  { label: "Process", href: "#process" },
-  { label: "Contact", href: "#contact" },
+  { label: "Home", href: "/#home" },
+  { label: "About", href: "/#about" },
+  { label: "Services", href: "/#services" },
+  { label: "Work", href: "/#work" },
+  { label: "Gallery", href: "/gallery" },
+  { label: "Team", href: "/#team" },
+  { label: "Process", href: "/#process" },
+  { label: "Contact", href: "/#contact" },
 ];
 
 /* -------------------------------------------------------------------------- */
@@ -63,8 +67,9 @@ export const hero = {
   headlineHighlight: "Peak",
   subtext:
     "Peak Status is a Cebu-based creative and digital growth studio helping local businesses build stronger brands, better content, and smarter digital systems.",
-  primaryCta: { label: "Work With Us", href: "#contact" },
-  secondaryCta: { label: "View Services", href: "#services" },
+  // Root-relative so the header CTA (shown on every page) always resolves home.
+  primaryCta: { label: "Work With Us", href: "/#contact" },
+  secondaryCta: { label: "View Services", href: "/#services" },
 };
 
 /* -------------------------------------------------------------------------- */
@@ -210,14 +215,29 @@ export type PortfolioItem = {
   title: string;
   description: string;
   tag: string;
-  // TODO: Set `image` to a path under /public/work/... once assets are ready.
+  // Path to a sample image under /public/work/... (optional). Cards with no
+  // image fall back to a tech/link layout (for software projects) or a branded
+  // "sample coming soon" placeholder.
   image?: string;
+  /**
+   * How the image sits in the card frame. "cover" (default) fills and crops —
+   * best for landscape art. "contain" shows the whole piece letterboxed —
+   * best for portrait pieces like social posts and carousels.
+   */
+  fit?: "cover" | "contain";
+  /** Tech stack chips — used by software project cards (no image needed). */
+  tech?: string[];
+  /** External links shown on software project cards. */
+  liveUrl?: string;
+  githubUrl?: string;
 };
 
 export type PortfolioBucket = {
   id: string;
   title: string;
-  owner: string;
+  // Optional per-person credit. Left unset here: Work is presented as one
+  // combined company portfolio rather than attributed to individuals.
+  owner?: string;
   summary: string;
   items: PortfolioItem[];
 };
@@ -229,70 +249,157 @@ export const portfolioBuckets: PortfolioBucket[] = [
   {
     id: "creative",
     title: "Creative Design Portfolio",
-    owner: "Brian Diaz",
     summary:
-      "Visual identity, advertising, and product-ready design work.",
+      "Brand identity, logo design, and social media content from our team.",
     items: [
-      // TODO: Replace placeholder cards with real samples. Add images to /public/work/creative/
+      {
+        title: "Brand Identity System",
+        description:
+          "A logo and identity system for a construction and remodeling brand, delivered across multiple colorways and applications.",
+        tag: "Branding",
+        image: "/work/branding/atp-01-chrome.png",
+        fit: "cover",
+      },
+      {
+        title: "Logo Exploration",
+        description:
+          "Blueprint-inspired monogram concepts showing how a single mark adapts across styles and backgrounds.",
+        tag: "Logo Design",
+        image: "/work/branding/atp-02-blueprint.png",
+        fit: "cover",
+      },
+      {
+        title: "Social Media Design",
+        description:
+          "Clean, scroll-stopping promotional post design built for social feeds.",
+        tag: "Social Media",
+        image: "/work/social/home-heart-post.png",
+        fit: "contain",
+      },
+      {
+        title: "Social Media Carousel",
+        description:
+          "A multi-slide carousel with a consistent visual system, designed to tell a brand story from hook to takeaway.",
+        tag: "Carousel",
+        image: "/work/social/growth-carousel-01.png",
+        fit: "contain",
+      },
+      {
+        title: "Product Packaging Design",
+        description:
+          "A vibrant effervescent supplement line — cohesive packaging and labels across the full range of variants.",
+        tag: "Product Design",
+        image: "/work/product/product-dailies-effervescent.jpg",
+        fit: "cover",
+      },
+      {
+        title: "Skincare Product Line",
+        description:
+          "A clean, premium serum collection with a consistent label system across the whole lineup.",
+        tag: "Product Design",
+        image: "/work/product/product-velvet-serums.jpg",
+        fit: "cover",
+      },
       {
         title: "Logo Collection",
-        description: "Logo and identity explorations across multiple brands.",
-        tag: "Branding",
-      },
-      {
-        title: "Social Media Ads",
-        description: "Scroll-stopping ad creative for Facebook and Instagram.",
-        tag: "Advertising",
-      },
-      {
-        title: "Product Packaging & Mockups",
-        description: "Packaging design and realistic product mockups.",
-        tag: "Packaging",
-      },
-      {
-        title: "Marketing Collateral",
-        description: "Brochures, banners, and business cards built to print.",
-        tag: "Print",
-      },
-      {
-        title: "Photography",
-        description: "Product and lifestyle photography for content and ads.",
-        tag: "Photo",
+        description:
+          "A logofolio spanning food, fitness, retail, and lifestyle brands — a range of marks and styles.",
+        tag: "Logo Design",
+        image: "/work/branding/logofolio-01.jpg",
+        fit: "cover",
       },
     ],
   },
   {
     id: "technical",
     title: "Technical & Digital Systems Portfolio",
-    owner: "Kenneth Ayade",
     summary:
-      "Websites, frontend builds, and automation that support growth.",
+      "Web & mobile apps, full-stack builds, government systems, and business websites.",
     items: [
-      // TODO: Replace placeholder cards with real samples. Add images to /public/work/technical/
       {
-        title: "Web Development",
-        description: "Business websites built to be fast and easy to manage.",
-        tag: "Web",
+        title: "Wheels On Go",
+        description:
+          "A ride-hailing platform with real-time GPS tracking, WebSocket dispatch, surge pricing, and AI-powered fatigue detection.",
+        tag: "Mobile App",
+        tech: [
+          "Kotlin",
+          "Jetpack Compose",
+          "NestJS",
+          "PostgreSQL",
+          "Socket.IO",
+          "Google Maps API",
+        ],
+        githubUrl: "https://github.com/KennethAyade/Wheels_On_Go",
       },
       {
-        title: "Frontend Development",
-        description: "Modern, responsive interfaces with clean UX.",
-        tag: "Frontend",
+        title: "MGB MRFC Manager",
+        description:
+          "A government tablet system for the Mines and Geosciences Bureau with offline-first architecture and AI-powered compliance analysis.",
+        tag: "Mobile App",
+        tech: [
+          "Kotlin",
+          "Material Design 3",
+          "Express",
+          "PostgreSQL",
+          "AWS S3",
+          "Claude AI",
+        ],
+        githubUrl: "https://github.com/KennethAyade/mgb-mrfc_manager_repo",
       },
       {
-        title: "RPA / Automation",
-        description: "Robotic process automation for repetitive manual tasks.",
-        tag: "Automation",
+        title: "SAG Permit Online",
+        description:
+          "A government permit application platform with multi-step workflows, auto-save, and automated document processing.",
+        tag: "Web App",
+        tech: [
+          "Next.js",
+          "TypeScript",
+          "PostgreSQL",
+          "Prisma",
+          "NextAuth.js",
+          "Tailwind CSS",
+        ],
+        liveUrl: "https://pgin-online-permit-system-repo.vercel.app/",
+        githubUrl: "https://github.com/KennethAyade/pgin-online_permit_system_repo",
       },
       {
-        title: "Workflow Systems",
-        description: "Connected tools and workflows that reduce busywork.",
-        tag: "Systems",
+        title: "Blue Payment Systems",
+        description:
+          "A fintech payment-processing platform with real-time transaction monitoring and a custom admin dashboard.",
+        tag: "Web Platform",
+        tech: [
+          "WordPress",
+          "Custom PHP",
+          "Payment Gateway APIs",
+          "Security Hardening",
+        ],
+        liveUrl: "https://bluepaymentsystems.com/",
       },
       {
-        title: "Business Process Automation",
-        description: "Streamlined operations through practical integrations.",
-        tag: "Process",
+        title: "Wearcon",
+        description:
+          "A fashion e-commerce platform with WooCommerce, advanced catalog filtering, and a mobile-optimized checkout.",
+        tag: "E-Commerce",
+        tech: [
+          "WordPress",
+          "WooCommerce",
+          "Custom PHP",
+          "Payment Integration",
+        ],
+        liveUrl: "https://wearcon.com/",
+      },
+      {
+        title: "Global Marketing Network",
+        description:
+          "A digital marketing agency website with interactive analytics, lead-generation forms, and SEO optimization.",
+        tag: "Web Design",
+        tech: [
+          "WordPress",
+          "Advanced Custom Fields",
+          "Analytics",
+          "SEO",
+        ],
+        liveUrl: "https://globalmktgnetwork.com/",
       },
     ],
   },
@@ -537,3 +644,277 @@ export const contact = {
     "Tell us a bit about your business and what you're aiming for. We'll get back to you to talk about how Peak Status can help.",
   cta: { label: "Start a Conversation", href: "" }, // mailto built at runtime
 };
+
+/* -------------------------------------------------------------------------- */
+/*  Gallery ( /gallery )                                                       */
+/* -------------------------------------------------------------------------- */
+/*
+ * The full-work gallery. Presented as one combined company portfolio — no
+ * individual attribution. Every image lives under /public/work/... with a
+ * neutral filename. `width`/`height` are the real intrinsic pixel dimensions,
+ * required by next/image for the masonry layout to reserve correct space.
+ *
+ * To add work: drop the file in /public/work/<category>/, then add an entry
+ * with its true dimensions. Keep titles honest — no invented clients, metrics,
+ * or results.
+ */
+
+export type GalleryImage = {
+  src: string;
+  title: string;
+  tag: string;
+  width: number;
+  height: number;
+};
+
+export type GalleryCategory = {
+  id: string;
+  title: string;
+  description: string;
+  images: GalleryImage[];
+};
+
+export const galleryIntro = {
+  eyebrow: "Gallery",
+  title: "Our Work",
+  description:
+    "A growing collection of creative work from the Peak Status team — brand identity, logo design, product packaging, social media, and marketing collateral. Tap any piece to view it up close.",
+};
+
+export const galleryCategories: GalleryCategory[] = [
+  {
+    id: "branding",
+    title: "Branding & Logo Design",
+    description:
+      "Logo and identity systems across a range of brands — from a single construction identity explored in multiple colorways to a broader collection of client logos.",
+    images: [
+      {
+        src: "/work/branding/atp-01-chrome.png",
+        title: "Construction Brand — Chrome",
+        tag: "Logo Design",
+        width: 1280,
+        height: 720,
+      },
+      {
+        src: "/work/branding/atp-02-blueprint.png",
+        title: "Construction Brand — Blueprint",
+        tag: "Logo Design",
+        width: 1280,
+        height: 720,
+      },
+      {
+        src: "/work/branding/atp-03-white.png",
+        title: "Construction Brand — Reversed",
+        tag: "Logo Design",
+        width: 1280,
+        height: 720,
+      },
+      {
+        src: "/work/branding/atp-04-mono.png",
+        title: "Construction Brand — Monochrome",
+        tag: "Logo Design",
+        width: 1280,
+        height: 720,
+      },
+      {
+        src: "/work/branding/atp-05-duotone.png",
+        title: "Construction Brand — Duotone",
+        tag: "Logo Design",
+        width: 1280,
+        height: 720,
+      },
+      {
+        src: "/work/branding/logofolio-01.jpg",
+        title: "Logo Collection — Vol. 1",
+        tag: "Logofolio",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/branding/logofolio-02.jpg",
+        title: "Logo Collection — Vol. 2",
+        tag: "Logofolio",
+        width: 2048,
+        height: 1448,
+      },
+    ],
+  },
+  {
+    id: "product",
+    title: "Product & Packaging Design",
+    description:
+      "Packaging and label design across supplements, skincare, beverages, and car care — from single labels to full product lines.",
+    images: [
+      {
+        src: "/work/product/product-dailies-effervescent.jpg",
+        title: "Effervescent Supplement Line",
+        tag: "Packaging",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/product/product-velvet-serums.jpg",
+        title: "Skincare Serum Collection",
+        tag: "Packaging",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/product/product-velvet-skincare.jpg",
+        title: "Skincare Product Range",
+        tag: "Packaging",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/product/product-supplements-docschoice.jpg",
+        title: "Supplement Bottle Series",
+        tag: "Packaging",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/product/product-autoboss-lineup.jpg",
+        title: "Car & Motor Care Line",
+        tag: "Packaging",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/product/product-opticare.jpg",
+        title: "Eye Drop Packaging System",
+        tag: "Packaging",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/product/product-eardrops-opticare.jpg",
+        title: "Eyecare & Eardrop Packaging",
+        tag: "Packaging",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/product/product-docschoice-juice-coffee.jpg",
+        title: "Health Drink Packaging",
+        tag: "Packaging",
+        width: 2048,
+        height: 1448,
+      },
+    ],
+  },
+  {
+    id: "social",
+    title: "Social Media Design",
+    description:
+      "Promotional posts, campaign grids, and multi-slide carousels, built with a consistent visual system for social feeds.",
+    images: [
+      {
+        src: "/work/social/home-heart-post.png",
+        title: "Promotional Post Design",
+        tag: "Social Media",
+        width: 2430,
+        height: 3038,
+      },
+      {
+        src: "/work/social/social-dailies.jpg",
+        title: "Effervescent — Social Campaign",
+        tag: "Social Media",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/social/social-velvet.jpg",
+        title: "Skincare — Social Campaign",
+        tag: "Social Media",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/social/social-immuniplus.jpg",
+        title: "Wellness Drink — Social Campaign",
+        tag: "Social Media",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/social/social-docschoice.jpg",
+        title: "Supplements — Social Campaign",
+        tag: "Social Media",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/social/growth-carousel-01.png",
+        title: "Brand Story Carousel — 1",
+        tag: "Carousel",
+        width: 3375,
+        height: 4219,
+      },
+      {
+        src: "/work/social/growth-carousel-02.png",
+        title: "Brand Story Carousel — 2",
+        tag: "Carousel",
+        width: 3375,
+        height: 4219,
+      },
+      {
+        src: "/work/social/growth-carousel-03.png",
+        title: "Brand Story Carousel — 3",
+        tag: "Carousel",
+        width: 3375,
+        height: 4219,
+      },
+      {
+        src: "/work/social/growth-carousel-04.png",
+        title: "Brand Story Carousel — 4",
+        tag: "Carousel",
+        width: 3375,
+        height: 4219,
+      },
+      {
+        src: "/work/social/growth-carousel-05.png",
+        title: "Brand Story Carousel — 5",
+        tag: "Carousel",
+        width: 3375,
+        height: 4219,
+      },
+      {
+        src: "/work/social/growth-carousel-06.png",
+        title: "Brand Story Carousel — 6",
+        tag: "Carousel",
+        width: 3375,
+        height: 4219,
+      },
+      {
+        src: "/work/social/growth-carousel-07.png",
+        title: "Brand Story Carousel — 7",
+        tag: "Carousel",
+        width: 3375,
+        height: 4219,
+      },
+    ],
+  },
+  {
+    id: "collateral",
+    title: "Marketing Collateral",
+    description:
+      "Print and promotional material — advertising banners, trifold brochures, and business cards.",
+    images: [
+      {
+        src: "/work/collateral/collateral-autoboss-banners.jpg",
+        title: "Product Advertising Banners",
+        tag: "Collateral",
+        width: 2048,
+        height: 1448,
+      },
+      {
+        src: "/work/collateral/collateral-3plus-brochure.jpg",
+        title: "Trifold Brochure & Business Card",
+        tag: "Collateral",
+        width: 2048,
+        height: 1448,
+      },
+    ],
+  },
+];
