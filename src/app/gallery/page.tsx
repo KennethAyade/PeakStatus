@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Gallery from "@/components/Gallery";
+import ChatWidget from "@/components/ChatWidget";
 import Reveal from "@/components/ui/Reveal";
 import { galleryIntro } from "@/data/site";
 
@@ -46,6 +47,7 @@ export default function GalleryPage() {
         </section>
       </main>
       <Footer />
+      <ChatWidget />
     </>
   );
 }

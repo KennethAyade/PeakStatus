@@ -27,6 +27,9 @@ export const siteConfig = {
   // Phone shown across the site; phoneHref is the tel: (international) form.
   phone: "0945 283 8035",
   phoneHref: "+639452838035",
+  // Floating "Chat with us on Messenger" button. Points at the Page's m.me link
+  // (derived from facebook.com/peakstatusmarketing). Empty string hides it.
+  messengerUrl: "https://m.me/peakstatusmarketing",
   // Feature flag — set to false to hide the entire pricing/packages section.
   showPricing: true,
   // Social links — set href to a real URL to display. Empty values are hidden.
