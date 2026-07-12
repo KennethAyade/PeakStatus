@@ -553,64 +553,100 @@ export type PricingPackage = {
   description: string;
   features: string[];
   featured?: boolean;
+  /** Renders as a full-width flagship card (spans the whole row). */
+  wide?: boolean;
 };
 
+// Public-facing "starting at" prices. Detailed package tiers and founding-client
+// rates are handled during quoting and are intentionally kept off the site.
 export const pricing = {
-  eyebrow: "Packages",
-  title: "Sample starting packages",
+  eyebrow: "Pricing",
+  title: "Startup-friendly pricing",
   disclaimer:
-    "Sample starting packages. Final pricing depends on scope, deliverables, and timeline.",
+    "Prices are starting points for early-stage partners and depend on final scope. Ad spend, hosting, domains, paid software, and content production are billed separately.",
   packages: [
     {
-      name: "Starter",
-      price: "₱10,000 – ₱15,000",
-      description: "A focused starting point for businesses getting set up.",
+      name: "Branding & Identity",
+      price: "From ₱7,000",
+      description:
+        "Define how your business looks, sounds, and is remembered.",
       features: [
-        "Brand or content essentials",
-        "Core deliverables defined with you",
-        "Single focus area",
+        "Logo & identity system",
+        "Color & typography",
+        "Brand guide & assets",
+        "Social profile graphics",
       ],
     },
     {
-      name: "Growth",
-      price: "₱20,000 – ₱30,000",
-      description: "For brands ready to grow content and marketing together.",
+      name: "Content & Social Media",
+      price: "From ₱8,900/mo",
+      description:
+        "Show up consistently with content built for your brand and audience.",
       features: [
-        "Content + social media support",
-        "Ad creative direction",
-        "Ongoing collaboration",
+        "Graphic posts & carousels",
+        "Short-form video",
+        "Captions & scheduling",
+        "Monthly performance report",
+      ],
+    },
+    {
+      name: "Digital Marketing & Growth",
+      price: "From ₱7,500/mo",
+      description:
+        "Tested campaigns that turn attention into real interest. Ad spend is billed separately.",
+      features: [
+        "Campaign setup & monitoring",
+        "Audience targeting & retargeting",
+        "Conversion tracking",
+        "Monthly report",
+      ],
+    },
+    {
+      name: "Landing Pages",
+      price: "From ₱10,000",
+      description: "A focused, responsive page built to convert.",
+      features: [
+        "One responsive page",
+        "Inquiry form & CTAs",
+        "Basic SEO & analytics",
+        "Deployment",
+      ],
+    },
+    {
+      name: "Business Websites",
+      price: "From ₱20,000",
+      description: "Multi-page sites that are fast and easy to manage.",
+      features: [
+        "Up to 6 pages",
+        "Mobile-responsive design",
+        "CMS & basic SEO",
+        "Analytics & launch support",
+      ],
+    },
+    {
+      name: "Workflow Automation",
+      price: "From ₱10,000",
+      description: "Connect your tools and automate repetitive busywork.",
+      features: [
+        "Workflow & CRM setup",
+        "Tool integrations",
+        "Testing & documentation",
+        "Post-launch support",
+      ],
+    },
+    {
+      name: "Full-Service Growth Partnership",
+      price: "Custom packages",
+      description:
+        "Brand, website, marketing, and systems handled together as one growth partner.",
+      features: [
+        "Branding + website foundation",
+        "Marketing & ad-platform setup",
+        "CRM & lead automation",
+        "Ongoing management & reporting",
       ],
       featured: true,
-    },
-    {
-      name: "Premium",
-      price: "₱40,000+",
-      description: "Comprehensive support across brand, content, and systems.",
-      features: [
-        "Full creative + marketing scope",
-        "Web or automation add-ons",
-        "Priority collaboration",
-      ],
-    },
-    {
-      name: "Brand Strategy",
-      price: "₱15,000+",
-      description: "Strategic foundation for how your brand shows up.",
-      features: [
-        "Positioning & messaging",
-        "Audience direction",
-        "Brand strategy document",
-      ],
-    },
-    {
-      name: "Brand Identity",
-      price: "₱25,000+",
-      description: "A complete, consistent visual identity system.",
-      features: [
-        "Logo direction",
-        "Visual identity",
-        "Brand guidelines",
-      ],
+      wide: true,
     },
   ] as PricingPackage[],
 };

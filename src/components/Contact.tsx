@@ -8,27 +8,56 @@ import { contact, siteConfig } from "@/data/site";
 /**
  * Contact section.
  *
- * The form is intentionally backend-free for now: on submit it opens the
- * visitor's email client with a pre-filled message (a mailto fallback).
- *
- * TODO (before launch): Replace `handleSubmit` with a real submission flow.
- * Options:
- *   - A Next.js Route Handler (src/app/api/contact/route.ts) + email service
- *     such as Resend, Nodemailer, or Postmark.
- *   - A hosted form provider such as Formspree, Web3Forms, or Basin.
+ * Submissions POST to /api/contact, which forwards them to Web3Forms (emailing
+ * the studio inbox). A hidden honeypot field drops bots. If the endpoint isn't
+ * configured or fails, we fall back to opening the visitor's email client
+ * (mailto:) so a message is never lost.
  */
+type Status = "idle" | "sending" | "success" | "error";
+
 export default function Contact() {
   const [form, setForm] = useState({ name: "", email: "", message: "" });
+  const [botcheck, setBotcheck] = useState("");
+  const [status, setStatus] = useState<Status>("idle");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const mailtoHref = () => {
     const subject = encodeURIComponent(
       `New inquiry from ${form.name || "website visitor"}`,
     );
     const body = encodeURIComponent(
       `Name: ${form.name}\nEmail: ${form.email}\n\n${form.message}`,
     );
-    window.location.href = `mailto:${siteConfig.email}?subject=${subject}&body=${body}`;
+    return `mailto:${siteConfig.email}?subject=${subject}&body=${body}`;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (status === "sending") return;
+    setStatus("sending");
+
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, botcheck }),
+      });
+
+      if (res.ok) {
+        setStatus("success");
+        setForm({ name: "", email: "", message: "" });
+        return;
+      }
+
+      // 503 = endpoint not configured yet → use the email client instead.
+      if (res.status === 503) {
+        window.location.href = mailtoHref();
+        setStatus("idle");
+        return;
+      }
+      setStatus("error");
+    } catch {
+      setStatus("error");
+    }
   };
 
   const inputClasses =
@@ -147,15 +176,53 @@ export default function Contact() {
                 />
               </div>
 
+              {/* Honeypot — hidden from users, catches bots. */}
+              <input
+                type="text"
+                name="botcheck"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                value={botcheck}
+                onChange={(e) => setBotcheck(e.target.value)}
+                className="absolute left-[-9999px] h-0 w-0 opacity-0"
+              />
+
               <button
                 type="submit"
-                className="mt-2 inline-flex items-center justify-center rounded-full bg-white px-7 py-3.5 text-sm font-medium text-ink transition-transform hover:scale-[1.02] active:scale-95"
+                disabled={status === "sending" || status === "success"}
+                className="mt-2 inline-flex items-center justify-center rounded-full bg-white px-7 py-3.5 text-sm font-medium text-ink transition-transform hover:scale-[1.02] active:scale-95 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {contact.cta.label}
+                {status === "sending"
+                  ? "Sending…"
+                  : status === "success"
+                    ? "Sent ✓"
+                    : contact.cta.label}
               </button>
 
-              <p className="text-center text-xs text-muted/60">
-                This opens your email app. A connected form is coming soon.
+              <p
+                aria-live="polite"
+                className="text-center text-xs text-muted/70"
+              >
+                {status === "success" ? (
+                  <span className="text-foreground">
+                    Thanks! We&apos;ve received your message and will get back to
+                    you soon.
+                  </span>
+                ) : status === "error" ? (
+                  <span>
+                    Something went wrong.{" "}
+                    <a
+                      href={mailtoHref()}
+                      className="text-foreground underline underline-offset-2"
+                    >
+                      Email us directly
+                    </a>{" "}
+                    instead.
+                  </span>
+                ) : (
+                  "We usually reply within a day."
+                )}
               </p>
             </div>
           </form>

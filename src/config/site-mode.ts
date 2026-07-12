@@ -16,7 +16,7 @@
  *   http://localhost:3000/coming-soon
  * ---------------------------------------------------------------------------
  */
-export const MAINTENANCE_MODE = true;
+export const MAINTENANCE_MODE = false;
 
 /**
  * Decides whether the Coming Soon gate should apply for a given request host.
