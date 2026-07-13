@@ -8,9 +8,11 @@ import { contact, siteConfig } from "@/data/site";
 /**
  * Contact section.
  *
- * Submissions POST to /api/contact, which forwards them to Web3Forms (emailing
- * the studio inbox). A hidden honeypot field drops bots. If the endpoint isn't
- * configured or fails, we fall back to opening the visitor's email client
+ * Submissions go straight from the browser to Web3Forms (which emails the
+ * studio inbox). Client-side on purpose: Web3Forms sits behind Cloudflare,
+ * which blocks server-to-server calls from Vercel's datacenter IPs — a real
+ * browser passes the challenge. A hidden honeypot drops bots; if the key is
+ * missing or the call fails, we fall back to the visitor's email client
  * (mailto:) so a message is never lost.
  */
 type Status = "idle" | "sending" | "success" | "error";
@@ -30,31 +32,50 @@ export default function Contact() {
     return `mailto:${siteConfig.email}?subject=${subject}&body=${body}`;
   };
 
+  // Public by design — Web3Forms keys are meant to be embedded client-side.
+  const accessKey = process.env.NEXT_PUBLIC_WEB3FORMS_ACCESS_KEY;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (status === "sending") return;
+
+    // Honeypot: bots fill this hidden field. Pretend success, send nothing.
+    if (botcheck.trim() !== "") {
+      setStatus("success");
+      setForm({ name: "", email: "", message: "" });
+      return;
+    }
+
+    // No key configured → fall back to the visitor's email client.
+    if (!accessKey) {
+      window.location.href = mailtoHref();
+      return;
+    }
+
     setStatus("sending");
-
     try {
-      const res = await fetch("/api/contact", {
+      const res = await fetch("https://api.web3forms.com/submit", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, botcheck }),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: form.name,
+          email: form.email,
+          message: form.message,
+          subject: `New inquiry from ${form.name} — Peak Status`,
+          from_name: "Peak Status Website",
+        }),
       });
-
-      if (res.ok) {
+      const data = (await res.json().catch(() => ({}))) as { success?: boolean };
+      if (res.ok && data.success) {
         setStatus("success");
         setForm({ name: "", email: "", message: "" });
-        return;
+      } else {
+        setStatus("error");
       }
-
-      // 503 = endpoint not configured yet → use the email client instead.
-      if (res.status === 503) {
-        window.location.href = mailtoHref();
-        setStatus("idle");
-        return;
-      }
-      setStatus("error");
     } catch {
       setStatus("error");
     }
